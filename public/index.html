@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agora — Philosophy Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Literata:opsz,wght@7..72,400..600&family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Serif+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:#eef1ed;--surface:#f8f9f6;--surface2:#e5eae5;--line:#d6ddd6;
+  --text:#25302b;--muted:#64726b;--accent:#3d6a63;--accent-ink:#ffffff;--glow:rgba(120,170,160,.20);
+  --shadow:0 1px 2px rgba(30,45,40,.06),0 10px 28px rgba(30,45,40,.07);
+  --ui:'Figtree','Noto Sans Devanagari',system-ui,sans-serif;
+  --read:'Literata','Noto Serif Devanagari',Georgia,serif;
+  --fs:1.2rem;--ease:cubic-bezier(.22,.61,.36,1)
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#161b19;--surface:#1e2422;--surface2:#262d2a;--line:#323b37;
+  --text:#dde3de;--muted:#98a59e;--accent:#8fbdb3;--accent-ink:#10201c;--glow:rgba(110,170,160,.09);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.28)}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;font-family:var(--ui);line-height:1.5;color:var(--text);
+  background:var(--bg) radial-gradient(900px 480px at 88% -8%,var(--glow),transparent 70%) no-repeat;
+  padding-bottom:env(safe-area-inset-bottom,0px)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+.muted{color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 15px;font-size:.92rem;background:var(--surface);border:1px solid var(--line);transition:background .25s,border-color .25s}
+.pill:hover{background:var(--surface2)}
+.btn{display:inline-block;border:0;border-radius:12px;padding:12px 24px;font-weight:600;background:var(--accent);color:var(--accent-ink);transition:opacity .25s,transform .25s var(--ease)}
+.btn:hover{opacity:.92;transform:translateY(-1px)}
+
+.top{max-width:1040px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 18px) 20px 4px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-family:var(--read);font-weight:600;font-size:1.65rem;letter-spacing:-.01em}
+#view{max-width:1040px;margin:0 auto;padding:14px 20px 90px}
+#view.enter{animation:enter .4s var(--ease) both}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+body[data-mode=reading] .top{display:none}
+body[data-mode=reading] #view{max-width:none;padding:0 0 90px}
+
+/* Home */
+.lede{font-family:var(--read);font-size:clamp(1.5rem,3.4vw,2.1rem);line-height:1.3;font-weight:500;margin:18px 0 22px;max-width:30ch}
+.search{max-width:520px;margin-bottom:26px}
+.search input{width:100%;font:inherit;font-size:1.02rem;padding:13px 18px;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:14px;transition:border-color .25s,box-shadow .25s}
+.search input::placeholder{color:var(--muted)}
+.search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.card{display:flex;flex-direction:column;gap:6px;min-height:160px;padding:20px;background:var(--surface);border:1px solid var(--line);border-radius:18px;transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.card h3{font-family:var(--read);font-weight:500;font-size:1.3rem;line-height:1.2;margin:0}
+.card .yrs{color:var(--accent);font-size:.88rem}
+.card .desc{color:var(--muted);font-size:.9rem}
+.card .count{margin-top:auto;color:var(--muted);font-size:.86rem}
+.more{display:block;margin:24px auto 0}
+.note{padding:22px;text-align:center;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:16px}
+
+/* Philosopher + book list */
+.hero{display:flex;flex-wrap:wrap;gap:24px;margin:18px 0 28px;padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:22px}
+.hero img{width:124px;height:156px;object-fit:cover;border-radius:14px}
+.hero h1{font-family:var(--read);font-weight:500;font-size:2.1rem;line-height:1.15;margin:0 0 4px}
+.hero .yrs{color:var(--accent);font-size:.92rem}
+.hero p{margin:12px 0 0;max-width:62ch;color:var(--muted);line-height:1.7}
+h2.sec{font-family:var(--read);font-weight:500;font-size:1.4rem;margin:0 0 12px}
+.blist{display:grid;gap:10px}
+.brow{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:15px 20px;background:var(--surface);border:1px solid var(--line);border-radius:16px;transition:background .25s,transform .3s var(--ease)}
+.brow:hover{background:var(--surface2);transform:translateX(2px)}
+.brow b{font-family:var(--read);font-weight:500;font-size:1.12rem}
+.brow .meta{color:var(--accent);font-size:.88rem;white-space:nowrap}
+
+/* Book page (contents) */
+.bookhead{margin:22px 0 8px;max-width:46rem}
+.bookhead h1{font-family:var(--read);font-weight:500;font-size:clamp(1.9rem,4.5vw,2.8rem);line-height:1.15;margin:0 0 8px}
+.bookhead .by{margin:0 0 20px;color:var(--muted)}
+.bookhead .by a{color:var(--accent)}
+.toc{list-style:none;margin:30px 0 0;padding:0;display:grid;gap:8px;max-width:46rem}
+.toc a{display:grid;grid-template-columns:2.6rem 1fr auto;align-items:center;gap:6px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;transition:background .25s,border-color .25s}
+.toc a:hover{background:var(--surface2)}
+.toc .num{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.92rem}
+.toc .h{font-family:var(--read);font-size:1.06rem;min-width:0;overflow-wrap:anywhere}
+.toc .tag{color:var(--accent);font-size:.82rem}
+.toc .seen .h{color:var(--muted)}
+.toc .last a{border-color:var(--accent)}
+
+/* Reading */
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:30;pointer-events:none}
+.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .15s linear}
+.rbar{position:sticky;top:0;z-index:10;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 84%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.rbar-in{max-width:920px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;display:flex;align-items:center;gap:8px}
+.rbar .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font-family:var(--read);font-size:1rem;color:var(--muted)}
+.read{max-width:40rem;margin:0 auto;padding:46px 22px 20px;font-family:var(--read);font-size:var(--fs);line-height:1.85}
+html[lang=hi] .read{line-height:2}
+.read .kicker{margin:0 0 10px;font-family:var(--ui);font-size:.86rem;color:var(--muted)}
+.read h1{font-weight:500;font-size:1.75em;line-height:1.22;margin:0 0 1.1em;overflow-wrap:anywhere}
+.read p{margin:0 0 1.15em;hyphens:auto}
+.read p.fallback{font-family:var(--ui);font-size:.9rem;color:var(--muted)}
+.pager{max-width:40rem;margin:14px auto 0;padding:0 22px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pager a{display:flex;flex-direction:column;gap:2px;min-width:0;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;transition:background .25s,transform .3s var(--ease)}
+.pager a:hover{background:var(--surface2)}
+.pager .nx{text-align:right;grid-column:2}
+.pager small{color:var(--muted);font-size:.8rem}
+.pager b{font-family:var(--read);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.end{max-width:40rem;margin:26px auto 0;padding:0 22px}
+.end .box{padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:20px}
+.end h2{font-family:var(--read);font-weight:500;font-size:1.5rem;margin:0 0 4px}
+.end p{margin:0 0 16px}
+
+/* Contents drawer */
+.scrim{position:fixed;inset:0;z-index:40;background:rgba(12,18,16,.35);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;bottom:0;right:0;z-index:41;width:min(380px,92vw);display:flex;flex-direction:column;background:var(--surface);border-left:1px solid var(--line);transform:translateX(102%);visibility:hidden;transition:transform .35s var(--ease),visibility 0s .35s}
+.drawer.open{transform:none;visibility:visible;transition:transform .35s var(--ease),visibility 0s}
+.dhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 16px) 18px 14px;border-bottom:1px solid var(--line)}
+.dhead b{font-family:var(--read);font-weight:500;font-size:1.1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dlist{list-style:none;margin:0;padding:10px;overflow-y:auto;flex:1}
+.dlist a{display:grid;grid-template-columns:2.2rem 1fr;gap:4px;padding:10px 12px;border-radius:10px;font-family:var(--read);font-size:.98rem}
+.dlist a:hover{background:var(--surface2)}
+.dlist a.on{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+.dlist .num{color:var(--muted);font-family:var(--ui);font-size:.86rem;font-variant-numeric:tabular-nums}
+
+@media (max-width:600px){.rbar .t{display:none}.rbar-in{justify-content:space-between}.read{padding-top:34px}.pager b{font-size:.92rem}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body data-mode="browse">
+<div class="progress" aria-hidden="true"><i id="pb"></i></div>
+<header class="top"><a class="logo" href="#/" id="logo">Agora</a><button class="pill" data-act="lang" id="lg"></button></header>
+<main id="view"></main>
+
+<div class="scrim" id="scrim" data-act="closetoc"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="dhead"><b id="dtitle"></b><button class="pill" data-act="closetoc" id="dclose"></button></div>
+  <ol class="dlist" id="dlist"></ol>
+</aside>
+
+<script>
+const T={
+ en:{title:'Agora',lede:'Read the great philosophers, chapter by chapter.',search:'Search a philosopher, e.g. Plato',books:'Books',back:'Back',
+  none:'Nothing matches that search. Try another spelling.',more:'Show more',read:'Read',chapters:'chapters',chapter:'Chapter',of:'of',
+  nobooks:'No books for this philosopher have been added yet.',contents:'Contents',by:'by',start:'Start reading',cont:'Continue reading',
+  lastRead:'Last read',prev:'Previous chapter',next:'Next chapter',close:'Close',done:'You finished this book',nextBook:'Read next, picked from your reading',
+  err:'Could not load this page. Check that the server is running.',fallback:'Hindi is not available for this text yet, showing English.',small:'A−',big:'A+',lang:'हिन्दी',
+  smallL:'Smaller text',bigL:'Larger text'},
+ hi:{title:'अगोरा',lede:'महान दार्शनिकों को अध्याय-दर-अध्याय पढ़ें।',search:'दार्शनिक खोजें, जैसे प्लेटो',books:'पुस्तकें',back:'वापस',
+  none:'इस खोज से कुछ नहीं मिला। दूसरी वर्तनी आज़माएँ।',more:'और दिखाएँ',read:'पढ़ें',chapters:'अध्याय',chapter:'अध्याय',of:'/',
+  nobooks:'इस दार्शनिक की कोई पुस्तक अभी जोड़ी नहीं गई है।',contents:'विषय-सूची',by:'लेखक:',start:'पढ़ना शुरू करें',cont:'आगे पढ़ें',
+  lastRead:'आख़िरी पढ़ा',prev:'पिछला अध्याय',next:'अगला अध्याय',close:'बंद करें',done:'आपने यह पुस्तक पूरी पढ़ ली',nextBook:'आगे पढ़ें, आपकी पढ़ाई के आधार पर',
+  err:'यह पृष्ठ लोड नहीं हो सका। जाँचें कि सर्वर चल रहा है।',fallback:'इस पाठ का हिंदी अनुवाद अभी उपलब्ध नहीं है, अंग्रेज़ी दिखा रहे हैं।',small:'अ−',big:'अ+',lang:'English',
+  smallL:'छोटा अक्षर',bigL:'बड़ा अक्षर'}
+};
+const store={get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+let lang=store.get('agora.lang','en');if(!T[lang])lang='en';
+let fs=Math.min(1.7,Math.max(1,+store.get('agora.fs',1.2)||1.2));
+document.documentElement.style.setProperty('--fs',fs+'rem');
+const t=k=>T[lang][k],$=s=>document.querySelector(s),view=$('#view');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const api=u=>fetch('/api'+u+(u.includes('?')?'&':'?')+'lang='+lang).then(r=>{if(!r.ok)throw Error(r.status);return r.json()});
+
+/* One fetch per book, so moving between chapters is instant for the contents list */
+const bookCache=new Map();
+async function getBook(id){
+  const k=id+lang;
+  if(!bookCache.has(k)){
+    const b=await api('/books/'+id);
+    if(!b.chapters?.length&&b.chapterCount)b.chapters=Array.from({length:b.chapterCount},(_,i)=>({n:i+1,heading:`${t('chapter')} ${i+1}`}));
+    bookCache.set(k,b);
+  }
+  return bookCache.get(k);
+}
+const seenOf=id=>store.get('agora.seen',{})[id]||[];
+const posOf=id=>store.get('agora.pos',{})[id];
+function mark(id,n){
+  const s=store.get('agora.seen',{}),a=s[id]||(s[id]=[]);if(!a.includes(n))a.push(n);store.set('agora.seen',s);
+  const p=store.get('agora.pos',{});p[id]=n;store.set('agora.pos',p);
+}
+
+let nav=0,cur=null,progressEl=$('#pb'),lastFocus=null;
+function show(html,mode){
+  document.body.dataset.mode=mode||'browse';
+  view.innerHTML=html;
+  view.classList.remove('enter');void view.offsetWidth;view.classList.add('enter');   // replays the soft entrance
+  window.scrollTo(0,0);scrollSync();
+}
+function chrome(){
+  document.documentElement.lang=lang;document.title=t('title')+' — Philosophy Library';
+  $('#logo').textContent=t('title');$('#lg').textContent=t('lang');$('#dclose').textContent=t('close');
+}
+const fail=()=>show(`<div class="note" style="margin-top:30px">${t('err')}</div>`);
+
+/* ---------- Home ---------- */
+async function home(tok){
+  show(`<p class="lede">${t('lede')}</p><div class="search"><input id="q" type="search" placeholder="${esc(t('search'))}" aria-label="${esc(t('search'))}" autocomplete="off"></div><div class="grid" id="g"></div><div id="m"></div>`);
+  let page=1,q='',timer;
+  const load=async reset=>{
+    const d=await api(`/philosophers?page=${page}&q=${encodeURIComponent(q)}`);
+    if(tok!==nav)return;
+    if(reset)$('#g').innerHTML='';
+    $('#g').insertAdjacentHTML('beforeend',d.items.map(p=>`<a class="card" href="#/p/${esc(p.id)}"><h3>${esc(p.name)}</h3><span class="yrs">${esc(p.years)}</span><span class="desc">${esc(p.description||'')}</span><span class="count">${p.bookCount} ${t('books')}</span></a>`).join(''));
+    if(reset&&!d.items.length)$('#g').innerHTML=`<div class="note" style="grid-column:1/-1">${t('none')}</div>`;
+    $('#m').innerHTML=d.hasMore?`<button class="pill more" id="mb">${t('more')}</button>`:'';
+    if(d.hasMore)$('#mb').onclick=()=>{page++;load(false).catch(()=>{})};
+  };
+  $('#q').oninput=e=>{clearTimeout(timer);timer=setTimeout(()=>{q=e.target.value.trim();page=1;load(true).catch(()=>{})},250)};
+  await load(true);
+}
+
+/* ---------- Philosopher ---------- */
+async function philosopher(id,tok){
+  const p=await api('/philosophers/'+encodeURIComponent(id));
+  if(tok!==nav)return;
+  show(`<a class="pill" href="#/">${t('back')}</a>
+   <section class="hero">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy">`:''}<div><h1>${esc(p.name)}</h1><div class="yrs">${esc(p.years)}${p.schools?.length?' · '+esc(p.schools.slice(0,3).join(', ')):''}</div><p>${esc(p.bio||p.description||'')}</p></div></section>
+   <h2 class="sec">${t('books')}</h2>
+   <div class="blist">${p.books.length?p.books.map(b=>`<a class="brow" href="#/b/${esc(b.id)}"><div><b>${esc(b.title)}</b><div class="muted" style="font-size:.88rem">${esc(b.subjects.slice(0,2).join(' · '))}</div></div><span class="meta">${b.chapterCount} ${t('chapters')}</span></a>`).join(''):`<div class="note">${t('nobooks')}</div>`}</div>`);
+}
+
+/* ---------- Book: table of contents ---------- */
+async function bookPage(id,tok){
+  const b=await getBook(id);
+  if(tok!==nav)return;
+  const seen=new Set(seenOf(id)),pos=posOf(id),n0=b.chapters[0]?.n||1;
+  show(`<a class="pill" href="#/p/${esc(b.philosopherId)}">${t('back')}</a>
+   <header class="bookhead"><h1>${esc(b.title)}</h1><p class="by">${t('by')} <a href="#/p/${esc(b.philosopherId)}">${esc(b.author||'')}</a> · ${b.chapters.length} ${t('chapters')}</p>
+   <a class="btn" href="#/b/${esc(id)}/c/${pos||n0}">${pos?`${t('cont')} · ${t('chapter')} ${pos}`:t('start')}</a></header>
+   <h2 class="sec" style="margin-top:34px;margin-bottom:0">${t('contents')}</h2>
+   <ol class="toc">${b.chapters.map(c=>`<li class="${seen.has(c.n)?'seen':''} ${c.n===pos?'last':''}"><a href="#/b/${esc(id)}/c/${c.n}"><span class="num">${c.n}</span><span class="h">${esc(c.heading)}</span><span class="tag">${c.n===pos?t('lastRead'):''}</span></a></li>`).join('')}</ol>`);
+}
+
+/* ---------- Chapter ---------- */
+async function chapter(id,n,tok){
+  const [b,c]=await Promise.all([getBook(id),api(`/books/${encodeURIComponent(id)}/chapters/${n}`)]);
+  if(tok!==nav)return;
+  const total=c.total||b.chapters.length,H=x=>b.chapters.find(k=>k.n===x)?.heading||`${t('chapter')} ${x}`;
+  mark(id,n);cur={id,n,total,b};
+  const prev=n>1?`<a class="pv" href="#/b/${esc(id)}/c/${n-1}"><small>← ${t('prev')}</small><b>${esc(H(n-1))}</b></a>`:'';
+  const next=n<total?`<a class="nx" href="#/b/${esc(id)}/c/${n+1}"><small>${t('next')} →</small><b>${esc(H(n+1))}</b></a>`:'';
+  show(`<div class="rbar"><div class="rbar-in">
+     <a class="pill" href="#/b/${esc(id)}">${t('back')}</a>
+     <button class="pill" data-act="toc">${t('contents')}</button>
+     <div class="t">${esc(b.title)} · ${esc(b.author||'')}</div>
+     <button class="pill" data-act="fm" aria-label="${t('smallL')}">${t('small')}</button>
+     <button class="pill" data-act="fp" aria-label="${t('bigL')}">${t('big')}</button>
+     <button class="pill" data-act="lang">${t('lang')}</button></div></div>
+   <article class="read">
+     <p class="kicker">${t('chapter')} ${n} ${t('of')} ${total}</p>
+     <h1>${esc(c.heading)}</h1>
+     ${lang==='hi'&&c.lang!=='hi'?`<p class="fallback">${t('fallback')}</p>`:''}
+     ${c.paragraphs.map(x=>`<p>${esc(x)}</p>`).join('')}
+   </article>
+   <nav class="pager">${prev}${next}</nav><div id="e"></div>`,'reading');
+  if(n>=total)await finish(b,tok);
+}
+
+async function finish(b,tok){
+  const f=store.get('agora.fin',[]);if(!f.includes(b.id)){f.push(b.id);store.set('agora.fin',f)}
+  let recs=[];try{recs=await api('/recommend?read='+encodeURIComponent(f.join(',')))}catch{}
+  if(tok!==nav||!$('#e'))return;
+  $('#e').innerHTML=`<section class="end"><div class="box"><h2>${t('done')}</h2><p class="muted">${t('nextBook')}</p><div class="blist">${recs.map(r=>`<a class="brow" href="#/b/${esc(r.id)}"><div><b>${esc(r.title)}</b><div class="muted" style="font-size:.88rem">${esc(r.author||'')}</div></div><span class="meta">${t('read')}</span></a>`).join('')}</div></div></section>`;
+}
+
+/* ---------- Contents drawer (inside the reader) ---------- */
+function openToc(){
+  if(!cur)return;
+  lastFocus=document.activeElement;
+  $('#dtitle').textContent=cur.b.title;
+  $('#dlist').innerHTML=cur.b.chapters.map(c=>`<li><a href="#/b/${esc(cur.id)}/c/${c.n}" class="${c.n===cur.n?'on':''}"><span class="num">${c.n}</span><span>${esc(c.heading)}</span></a></li>`).join('');
+  $('#scrim').classList.add('open');$('#drawer').classList.add('open');$('#drawer').setAttribute('aria-hidden','false');
+  $('#dlist .on')?.scrollIntoView({block:'center'});$('#dclose').focus();
+}
+function closeToc(){
+  if(!$('#drawer').classList.contains('open'))return;
+  $('#scrim').classList.remove('open');$('#drawer').classList.remove('open');$('#drawer').setAttribute('aria-hidden','true');
+  lastFocus&&lastFocus.focus&&lastFocus.focus();
+}
+
+/* ---------- Events ---------- */
+function setFs(d){fs=Math.min(1.7,Math.max(1,+(fs+d).toFixed(2)));store.set('agora.fs',fs);document.documentElement.style.setProperty('--fs',fs+'rem')}
+document.addEventListener('click',e=>{
+  if(e.target.closest('.dlist a')){closeToc();return}
+  const a=e.target.closest('[data-act]');if(!a)return;
+  ({lang(){lang=lang==='en'?'hi':'en';store.set('agora.lang',lang);route()},fm:()=>setFs(-.1),fp:()=>setFs(.1),toc:openToc,closetoc:closeToc})[a.dataset.act]();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeToc();
+  if(!cur||e.metaKey||e.ctrlKey||e.altKey||/INPUT|TEXTAREA/.test(document.activeElement?.tagName||''))return;
+  if(e.key==='ArrowRight'&&cur.n<cur.total)location.hash=`#/b/${cur.id}/c/${cur.n+1}`;
+  if(e.key==='ArrowLeft'&&cur.n>1)location.hash=`#/b/${cur.id}/c/${cur.n-1}`;
+});
+function scrollSync(){
+  if(!cur){progressEl.style.width='0';return}
+  const h=document.documentElement,max=h.scrollHeight-innerHeight;
+  progressEl.style.width=(max>0?Math.min(100,h.scrollTop/max*100):0)+'%';
+}
+addEventListener('scroll',scrollSync,{passive:true});
+
+async function route(){
+  const tok=++nav;closeToc();cur=null;chrome();
+  const [,k,id,c,n]=location.hash.split('/');
+  try{
+    if(k==='p')await philosopher(id,tok);
+    else if(k==='b'&&c==='c'&&+n>0)await chapter(id,+n,tok);
+    else if(k==='b')await bookPage(id,tok);
+    else await home(tok);
+  }catch{ if(tok===nav)fail() }
+}
+addEventListener('hashchange',route);route();
+</script>
+</body>
+</html>
